@@ -308,6 +308,42 @@ def render_evaluation() -> None:
         )
 
 
+DATASET_OVERVIEW = (
+    "Seven different types of dry beans were used in this research, taking into account "
+    "features such as form, shape, type and structure by the market situation. A computer "
+    "vision system was developed to distinguish seven registered varieties of dry beans with "
+    "similar features in order to obtain uniform seed classification. Images of 13,611 grains "
+    "were taken with a high-resolution camera, then segmented and processed to extract 16 "
+    "features: 12 dimensions and 4 shape forms."
+)
+DATASET_FACTS = [
+    ("Characteristics", "Multivariate"),
+    ("Subject area", "Biology"),
+    ("Associated task", "Classification"),
+    ("Feature type", "Integer, Real"),
+    ("Instances / features", "13,611 / 16"),
+]
+FEATURE_DEFINITIONS = [
+    ("Area (A)", "Area of a bean zone: the number of pixels within its boundaries."),
+    ("Perimeter (P)", "Bean circumference, defined as the length of its border."),
+    ("MajorAxisLength (L)", "Distance between the ends of the longest line that can be drawn from a bean."),
+    ("MinorAxisLength (l)", "Longest line that can be drawn from the bean while perpendicular to the main axis."),
+    ("AspectRation (K)", "Relationship between L and l."),
+    ("Eccentricity (Ec)", "Eccentricity of the ellipse having the same moments as the region."),
+    ("ConvexArea (C)", "Number of pixels in the smallest convex polygon that can contain the bean area."),
+    ("EquivDiameter (Ed)", "Diameter of a circle having the same area as the bean seed area."),
+    ("Extent (Ex)", "Ratio of the pixels in the bounding box to the bean area."),
+    ("Solidity (S)", "Also known as convexity: ratio of the pixels in the convex shell to those in the bean."),
+    ("roundness (R)", "Calculated as (4 * pi * A) / P^2."),
+    ("Compactness (CO)", "Measures the roundness of an object: Ed / L."),
+    ("ShapeFactor1 (SF1)", "Shape factor 1."),
+    ("ShapeFactor2 (SF2)", "Shape factor 2."),
+    ("ShapeFactor3 (SF3)", "Shape factor 3."),
+    ("ShapeFactor4 (SF4)", "Shape factor 4."),
+    ("Class", "Target: Seker, Barbunya, Bombay, Cali, Dermason, Horoz or Sira."),
+]
+
+
 def render_data_explorer() -> None:
     if not EDA_SUMMARY_PATH.is_file() or not EDA_SAMPLE_PATH.is_file():
         st.info("EDA files are missing. Run `python model_tr_and_eval.py` to generate them.")
@@ -320,6 +356,27 @@ def render_data_explorer() -> None:
     first.metric("Beans (rows)", f"{summary['n_rows']:,}")
     second.metric("Features", len(feature_columns))
     third.metric("Bean types", len(class_labels))
+
+    st.markdown("#### About the dataset")
+    st.write(DATASET_OVERVIEW)
+    characteristics = st.columns(5)
+    for column, (label, value) in zip(characteristics, DATASET_FACTS):
+        column.caption(label)
+        column.markdown(f"**{value}**")
+    with st.expander("Feature definitions", expanded=False):
+        st.dataframe(
+            pd.DataFrame(FEATURE_DEFINITIONS, columns=["Feature", "Description"]),
+            hide_index=True,
+            use_container_width=True,
+        )
+    st.caption(
+        "Class labels: " + ", ".join(label.title() for label in class_labels) + ". "
+        "Source: UCI Machine Learning Repository (CC BY 4.0)."
+    )
+
+    st.markdown("#### Summary statistics")
+    statistics = pd.DataFrame.from_dict(summary["statistics"], orient="index")
+    st.dataframe(statistics.loc[feature_columns], use_container_width=True)
 
     left, right = st.columns(2)
     with left:
@@ -401,11 +458,6 @@ def render_data_explorer() -> None:
             "Many size features (Area, Perimeter, axis lengths, ConvexArea, EquivDiameter) "
             "are strongly correlated, so they carry overlapping information."
         )
-
-    with st.expander("Summary statistics"):
-        statistics = pd.DataFrame.from_dict(summary["statistics"], orient="index")
-        st.dataframe(statistics.loc[feature_columns], use_container_width=True)
-
 
 def render_predictor() -> None:
     if not EDA_SUMMARY_PATH.is_file():
