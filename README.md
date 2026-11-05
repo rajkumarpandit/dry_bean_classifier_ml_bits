@@ -42,6 +42,7 @@ dry_bean_classifier_ml_bits/
 
 - Each `.joblib` file is a complete scikit-learn pipeline, so the feature scaling fitted on the training data is saved together with the classifier.
 - The raw source file (`DryBeanDataset/Dry_Bean_Dataset.csv`) is not committed. Download it from the UCI link above only if you want to retrain.
+- Link: https://archive.ics.uci.edu/dataset/602/dry+bean+dataset.
 
 ## Running the project
 
