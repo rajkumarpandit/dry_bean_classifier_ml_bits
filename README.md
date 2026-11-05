@@ -16,15 +16,32 @@ The downloaded dataset is licensed under [CC BY 4.0](https://creativecommons.org
 
 https://github.com/rajkumarpandit/dry_bean_classifier_ml_bits
 
-## Repository contents
+## Repository structure
 
-- `app.py` — Streamlit application (evaluation, data explorer and single-bean predictor tabs).
-- `dataset_gen_and_preprc.py` — validates the source CSV and creates a stratified train/test split.
-- `model_tr_and_eval.py` — trains models, saves artifacts, and writes the comparison table.
-- `ml_common.py` — shared model and metric definitions.
-- `DryBeanDataset/Dry_Bean_Dataset.csv` — source data (not committed; download it from the UCI link above to retrain).
-- `test_data.csv` — generated labeled holdout data for the app upload.
-- `model/` — five saved model pipelines, metadata, holdout comparison table, and compact EDA files (`eda_summary.json`, `eda_sample.csv`) used by the Data explorer.
+```text
+dry_bean_classifier_ml_bits/
+│-- app.py                          # Streamlit application
+│-- requirements.txt                # Python dependencies
+│-- README.md                       # Project documentation
+│-- test_data.csv                   # Labeled holdout data for uploading to the app
+│-- dataset_gen_and_preprc.py       # Source CSV validation and stratified train/test split
+│-- model_tr_and_eval.py            # Model training, evaluation and artifact export
+│-- ml_common.py                    # Shared model and metric definitions
+│-- LICENSE
+│-- model/                          # Saved trained models and preprocessing artifacts
+    │-- logistic_regression.joblib
+    │-- decision_tree_classifier.joblib
+    │-- k_nearest_neighbor_classifier.joblib
+    │-- gaussian_naive_bayes.joblib
+    │-- support_vector_machine.joblib
+    │-- metadata.json               # Feature columns, class labels and target name
+    │-- model_comparison.csv        # Holdout metrics for all five models
+    │-- eda_summary.json            # Statistics and correlations for the Data explorer
+    │-- eda_sample.csv              # Stratified sample used for the box plots
+```
+
+- Each `.joblib` file is a complete scikit-learn pipeline, so the feature scaling fitted on the training data is saved together with the classifier.
+- The raw source file (`DryBeanDataset/Dry_Bean_Dataset.csv`) is not committed. Download it from the UCI link above only if you want to retrain.
 
 ## Running the project
 
