@@ -92,7 +92,12 @@ if comparison_path.is_file():
     )
 
 if uploaded_file is None:
-    st.info("Upload the generated `test_data.csv` (or another labeled test CSV) to begin.")
+    st.info(
+        "Upload the generated `test_data.csv` (or another labeled test CSV) to begin.\n\n"
+        f"The file must include the `{target_column}` column and at least one row for "
+        "each of these classes:\n\n"
+        + "\n".join(f"- {label}" for label in class_labels)
+    )
     st.stop()
 
 try:

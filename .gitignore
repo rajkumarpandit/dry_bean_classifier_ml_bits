@@ -19,5 +19,8 @@ Thumbs.db
 # Streamlit local secrets
 .streamlit/secrets.toml
 
+# Personal local notes
+local.md
+
 # Raw source data (the holdout test_data.csv and model/ ARE committed)
 DryBeanDataset/
