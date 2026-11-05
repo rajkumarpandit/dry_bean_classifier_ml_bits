@@ -72,7 +72,33 @@ def train_models(
     (model_dir / "metadata.json").write_text(
         json.dumps(metadata, indent=2), encoding="utf-8"
     )
+    save_eda_artifacts(X_train, X_test, y_train, y_test, model_dir, random_state)
     return comparison
+
+
+def save_eda_artifacts(X_train, X_test, y_train, y_test, model_dir, random_state) -> None:
+    """Save compact summaries so the app can show EDA without the raw dataset."""
+    features = pd.concat([X_train, X_test])
+    labels = pd.concat([y_train, y_test]).rename(TARGET_COLUMN)
+    full = features.assign(**{TARGET_COLUMN: labels})
+
+    summary = {
+        "n_rows": int(len(full)),
+        "class_counts": labels.value_counts().to_dict(),
+        "statistics": features.describe().T.round(6).to_dict(orient="index"),
+        "correlation": features.corr().round(4).to_dict(),
+        "feature_min": features.min().to_dict(),
+        "feature_max": features.max().to_dict(),
+        "class_medians": full.groupby(TARGET_COLUMN).median().to_dict(orient="index"),
+    }
+    (model_dir / "eda_summary.json").write_text(
+        json.dumps(summary, indent=2), encoding="utf-8"
+    )
+
+    sample = full.groupby(TARGET_COLUMN, group_keys=False).sample(
+        n=300, replace=False, random_state=random_state
+    )
+    sample.round(6).to_csv(model_dir / "eda_sample.csv", index=False)
 
 
 def main() -> None:

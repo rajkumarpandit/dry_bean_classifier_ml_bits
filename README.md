@@ -18,13 +18,13 @@ https://github.com/rajkumarpandit/dry_bean_classifier_ml_bits
 
 ## Repository contents
 
-- `app.py` — Streamlit application.
+- `app.py` — Streamlit application (evaluation, data explorer and single-bean predictor tabs).
 - `dataset_gen_and_preprc.py` — validates the source CSV and creates a stratified train/test split.
 - `model_tr_and_eval.py` — trains models, saves artifacts, and writes the comparison table.
 - `ml_common.py` — shared model and metric definitions.
 - `DryBeanDataset/Dry_Bean_Dataset.csv` — source data (not committed; download it from the UCI link above to retrain).
 - `test_data.csv` — generated labeled holdout data for the app upload.
-- `model/` — five saved model pipelines, metadata, and holdout comparison table.
+- `model/` — five saved model pipelines, metadata, holdout comparison table, and compact EDA files (`eda_summary.json`, `eda_sample.csv`) used by the Data explorer.
 
 ## Running the project
 
@@ -44,7 +44,13 @@ Training uses a stratified 80/20 split with random seed 42 and regenerates `test
 
 ## Using the app
 
-Select a classifier and upload a labeled test CSV. The CSV must contain all 16 feature columns and the `Class` target column, with at least one row for each of the seven classes so multiclass AUC can be calculated. The app reports macro-averaged Precision, Recall, and F1, macro one-vs-rest AUC, a confusion matrix, and a classification report.
+The app has three tabs, and the classifier selected in the sidebar applies to the first two:
+
+- **Evaluate models** — a holdout comparison table and bar chart for all five models, followed by evaluation of an uploaded labeled test CSV with the selected model. The CSV must contain all 16 feature columns and the `Class` target column, with at least one row for each of the seven classes so multiclass AUC can be calculated. The app reports macro-averaged Precision, Recall, and F1, macro one-vs-rest AUC, MCC, an interactive confusion matrix, and a classification report.
+- **Single-bean predictor** — set the 16 measurements with sliders (or start from the typical bean of a class) and see the predicted bean type with class probabilities.
+- **Data explorer** — class distribution, per-class feature box plots, a correlation heatmap with the strongest feature pairs, and summary statistics.
+
+Charts are interactive (hover for exact values). The sidebar also offers a sample test CSV to download.
 
 ## Models and evaluation
 
@@ -60,4 +66,4 @@ The training script saves a CSV comparison table to `model/model_comparison.csv`
 
 ## Live app
 
-The deployed app link will be added here.
+https://drybeanclassifier-rajkumarpandit-ml-bits.streamlit.app/
